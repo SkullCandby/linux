@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>LOTW Desktop</title>
+<meta name="description" content="Linux on the Web is a desktop environment for web browsers">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="icon" href="/www/favicon.ico">
+<link href="/www/desk.css" rel="stylesheet">
+
+<script type="importmap">
+{
+    "imports": {
+        "util": "/mods/sys/util.js",
+        "config": "/mods/sys/config.js"
+    }
+}
+</script>
+<script src="/mods/sys/config.js" type="module"></script>
+<script src="/mods/sys/util.js" type="module"></script>
+<script src="/mods/sys/fs.js" type="module"></script>
+<script src="/mods/sys/desk.js" type="module"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>.icon a {
+    text-decoration: none;
+    color: white;  /* Initial text color */
+    display: block;
+    padding: 10px;  /* Adjust padding as needed */
+}
+
+.iconw {
+    cursor: pointer;
+    position: relative; /* Adjust positioning as needed */
+}
+
+.iconw:hover {
+    border: 1px solid rgb(255, 255, 0);
+}
+
+.iconl:hover  {
+    color: black; /* Text color change on hover */
+}
+
+</style>
+</head>
+<body>
+
+<header>
+    <div class="social-media-links" style="display: flex; justify-content: space-around; gap: 15px;">
+
+    <div class="icon" style="z-index: 1; "><span class="iconw" draggable="true" ><span class="iconi"><img src="tg.png" width="50" height="50">
+    </span>
+    </span>
+        <div class="iconl" title="Social&nbsp;media" style="color: rgb(255, 255, 255);">
+            Telegram
+        </div>
+    </div>
+
+
+<!-- Twitter Icon Link -->
+<div class="icon" style="z-index: 1; "><span class="iconw" draggable="true" ><span class="iconi"><img src="twit.png" width="60" height="50">
+</span>
+</span>
+    <div class="iconl" title="Social&nbsp;media" style="color: rgb(255, 255, 255);">
+        Twitter
+    </div>
+</div>
+
+
+<!-- Instagram Icon Link -->
+<div class="icon" style="z-index: 1; "><span class="iconw" draggable="true" ><span class="iconi"><img src="pump.png" width="50" height="50">
+</span>
+</span>
+    <div class="iconl" title="Social&nbsp;media" style="color: rgb(255, 255, 255);">
+        Pump
+    </div>
+</div>
+
+
+<!-- LinkedIn Icon Link -->
+</div>
+</header>
+
+<h3 id="error_message" style="position: fixed;">
+If you are seeing this message instead of a desktop environment,
+please check the javascript console of your web browser for any error
+messages!
+</h3>
+
+</body>
+</html>
