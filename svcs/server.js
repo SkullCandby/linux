@@ -1,16 +1,13 @@
-const PORT = 8000;
-const HOST = "localhost";
+const PORT = process.env.PORT || 8000; // Default to 8000 if no environment variable is set
+const HOST = process.env.HOST || '0.0.0.0'; // Listen on all network interfaces
 
-//«
 const fs = require('fs');
 const fsprom = require('node:fs/promises');
-const https = require('https');
 const http = require('http');
 
-const log=(...args)=>{console.log(...args);};
-//»
+const log = (...args) => { console.log(...args); };
 
-const EXT_TO_MIME = {//«
+const EXT_TO_MIME = {
 	js: "application/javascript",
 	json: "application/javascript",
 	html: "text/html",
@@ -25,73 +22,68 @@ const EXT_TO_MIME = {//«
 	ico: "image/vnd",
 	gz: "application/gzip",
 	wav: "audio/wav"
-}//»
+}
 const DEF_MIME = "application/octet-stream";
 
-const handler = async(req, res) => {//«
-
-	const ok = () => {res.writeHead(200, {'Content-Type': mime});};
-	const no = arg => {//«
-		res.writeHead(404, {'Content-Type': "text/plain"});
+const handler = async (req, res) => {
+	const ok = () => { res.writeHead(200, { 'Content-Type': mime }); };
+	const no = arg => {
+		res.writeHead(404, { 'Content-Type': "text/plain" });
 		if (arg) res.end(`Error: ${arg}\n`);
 		else res.end("Error\n");
-	};//»
+	};
 	let _url = decodeURIComponent(req.url);
 	let meth = req.method;
 
-
-	let url_parts = _url.split("?");//«
+	let url_parts = _url.split("?");
 	let url = url_parts[0];
 	let path;
-	let args={};
+	let args = {};
 	if (url_parts[1]) {
 		let args_arr = url_parts[1].split("&");
-		for (let arg of args_arr){
+		for (let arg of args_arr) {
 			let ar = arg.split("=");
 			args[ar[0]] = ar[1];
 		}
 	}
-log(`${meth} ${url}`);
-	if (url=="/") path = "./index.html";
+	log(`${meth} ${url}`);
+	if (url == "/") path = "./index.html";
 	else path = `.${url}`;
 	let ext = path.split(".").pop();
-	let mime;
-	if (!ext) mime = DEF_MIME;
-	else mime = EXT_TO_MIME[ext.toLowerCase()];
-	if (!mime) mime = DEF_MIME;
-//»
+	let mime = EXT_TO_MIME[ext.toLowerCase()] || DEF_MIME;
 
-if (meth === "GET") {
-
-	if (args.start && args.end) {//«
-		let si = parseInt(args.start);
-		let ei = parseInt(args.end);
-		let diff = ei - si + 1;
-		if (Number.isFinite(diff) && diff > 0) {
-			let buf = new Uint8Array(diff);
-			let fd = await fsprom.open(path);
-			let rv = await fd.read(buf, {position: si, length: diff});
-			fd.close();
-			ok();
-			res.end(rv.buffer);
+	if (meth === "GET") {
+		try {
+			if (args.start && args.end) {
+				let si = parseInt(args.start);
+				let ei = parseInt(args.end);
+				let diff = ei - si + 1;
+				if (Number.isFinite(diff) && diff > 0) {
+					let buf = new Uint8Array(diff);
+					let fd = await fsprom.open(path);
+					let rv = await fd.read(buf, { position: si, length: diff });
+					fd.close();
+					ok();
+					res.end(rv.buffer);
+				}
+				else {
+					no("Bad range");
+				}
+			}
+			else {
+				ok();
+				let fileData = await fsprom.readFile(path);
+				res.end(fileData);
+			}
 		}
-		else{
-			no("Bad range");
+		catch (e) {
+			no(e.message);
 		}
-	}//»
-	else {//«
-		ok();
-		res.end(fs.readFileSync(path));
-	}//»
-
-}
-else{
-	no("Unsupported method");
-}
-
-};//»
+	}
+	else {
+		no("Unsupported method");
+	}
+};
 
 http.createServer(handler).listen(PORT, HOST);
 log(`Listening on ${HOST}:${PORT}`);
-
-
